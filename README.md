@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/kOqwghv0)
-# ML Project — [Название проекта]
+# ML Project: Определение съедобности грибов
 
-**Студент:** [ФИО / Student ID]
+**Студент:** Воронцова Дарья Николаевна / dnvorontsova@edu.hse.ru
 
-**Группа:** [Группа]
+**Группа**: БИВ233
 
 
 ## Оглавление
@@ -18,47 +18,42 @@
 
 ## Описание задачи
 
-<!-- Кратко опишите задачу: что предсказываем, какой датасет, метрика качества -->
+**Задача:** бинарная классификация грибов по морфологическим признакам.
 
-**Задача:** [Классификация / Регрессия / Кластеризация / ...]
+**Датасет:** Secondary Mushroom Dataset, Kaggle: <https://www.kaggle.com/datasets/joebeachcapital/secondary-mushroom-dataset/data>
 
-**Датасет:** [Название и источник датасета]
+**Целевая переменная:** `class`, где `e` - съедобный гриб, `p` - ядовитый или не рекомендованный к употреблению.
 
-**Целевая метрика:** [Accuracy / F1 / RMSE / ...]
+**Основная метрика:** F1-score. Дополнительно считаются accuracy, precision, recall и ROC-AUC.
 
+## Структура проекта
 
-## Структура репозитория
-Опишите структуру проекта, сохранив при этом верхнеуровневые папки. Можно добавить новые при необходимости.
-```
+```text
 .
 ├── data
-│   ├── processed               # Очищенные и обработанные данные
-│   └── raw                     # Исходные файлы
-├── models                      # Сохранённые модели 
+│   ├── raw                  # исходные CSV и описания датасета
+│   └── processed            # train/val/test после подготовки
+├── models                   # сохраненные модели
 ├── notebooks
-│   ├── 01_eda.ipynb            # EDA
-│   ├── 02_baseline.ipynb       # Baseline-модель
-│   └── 03_experiments.ipynb    # Эксперименты и ablation study
-├── presentation                # Презентация для защиты
+│   ├── 01_data_preparation.ipynb
+│   └── 02_baseline.ipynb
+├── presentation             # Презентация для защиты
 ├── report
-│   ├── images                  # Изображения для отчёта
-│   └── report.md               # Финальный отчёт
+│   └── report.md            # Финальный отчет
 ├── src
-│   ├── preprocessing.py        # Предобработка данных
-│   └── modeling.py             # Обучение и оценка моделей
-├── tests
-│   └── test.py                 # Тесты пайплайна
+├── tests                    # Тесты пайплайна
+├── Dockerfile
+├── pytest.ini
 ├── requirements.txt
 └── README.md
 ```
 
 ## Запуск
 
-Этот блок замените способом запуска вашего сервиса.
 ```bash
 # 1. Клонировать репозиторий
-git clone <url>
-cd <repo-name>
+git clone https://github.com/hsemlcourse/hseml-group-project-daryavorontsova.git
+cd hseml-group-project-daryavorontsova
 
 # 2. Создать виртуальное окружение
 python -m venv .venv
@@ -69,19 +64,43 @@ source .venv/bin/activate   # Linux/macOS
 pip install -r requirements.txt
 ```
 
-## Данные
-- `data/raw/` — исходные файлы
-- `data/processed/` — предобработанные данные
+Проверки качества:
 
+```bash
+ruff check src tests --line-length 120
+flake8 src tests
+pytest
+```
+
+Запуск в Docker:
+
+```bash
+docker build -t mushroom-edibility .
+docker run --rm mushroom-edibility
+```
+
+## Данные
+
+Локальные исходные файлы находятся в `data/raw`. Основной файл для моделирования: `data/raw/secondary_data.csv`.
+
+После выполнения `01_data_preparation.ipynb` создаются:
+
+- `data/processed/train.csv`
+- `data/processed/val.csv`
+- `data/processed/test.csv`
 
 ## Результаты
-Здесь коротко выпишите результаты.
-| Модель | [Метрика 1] | [Метрика 2] | Примечание |
-|--------|-------------|-------------|------------|
-| Baseline | — | — | |
-| Лучшая модель | — | — | |
 
+### Baseline
 
-## Отчёт
+Baseline-модель находится в `notebooks/02_baseline.ipynb`: `LogisticRegression` с `OneHotEncoder` для категориальных признаков и `StandardScaler` для числовых. Ручной feature engineering в baseline не используется.
 
-Финальный отчёт: [`report/report.md`](report/report.md)
+Test-результаты baseline:
+
+| Accuracy | F1 | Precision | Recall | ROC-AUC |
+| ---: | ---: | ---: | ---: | ---: |
+| 0.8605 | 0.8446 | 0.8396 | 0.8496 | 0.9339 |
+
+## Отчет
+
+Финальный отчет: [report/report.md](report/report.md).
