@@ -10,10 +10,10 @@
 
 1. [Описание задачи](#описание-задачи)
 2. [Структура репозитория](#структура-репозитория)
-3. [Запуски](#быстрый-старт)
+3. [Запуски](#запуск)
 4. [Данные](#данные)
 5. [Результаты](#результаты)
-7. [Отчёт](#отчёт)
+6. [Отчет](#отчет)
 
 
 ## Описание задачи
@@ -36,10 +36,13 @@
 ├── models                   # сохраненные модели
 ├── notebooks
 │   ├── 01_data_preparation.ipynb
-│   └── 02_baseline.ipynb
+│   ├── 02_baseline.ipynb
+│   └── 03_modeling_experiments.ipynb
 ├── presentation             # Презентация для защиты
 ├── report
-│   └── report.md            # Финальный отчет
+│   ├── report.md            # Финальный отчет
+│   ├── experiment_results.csv
+│   └── final_test_metrics.json
 ├── src
 ├── tests                    # Тесты пайплайна
 ├── Dockerfile
@@ -99,8 +102,27 @@ Test-результаты baseline:
 
 | Accuracy | F1 | Precision | Recall | ROC-AUC |
 | ---: | ---: | ---: | ---: | ---: |
-| 0.8605 | 0.8446 | 0.8396 | 0.8496 | 0.9339 |
+| 0.8594 | 0.8437 | 0.8370 | 0.8504 | 0.9335 |
+
+### Моделирование и эксперименты
+
+Основные эксперименты находятся в `notebooks/03_modeling_experiments.ipynb`. Были проверены логистическая регрессия, дерево решений, RandomForest, ExtraTrees, GradientBoosting, AdaBoost, модели с `TruncatedSVD`, KNN и soft-voting ensemble.
+
+Полная таблица экспериментов сохранена в `report/experiment_results.csv`.
+
+Текущие test-результаты финальной модели:
+
+| Accuracy | F1 | Precision | Recall | ROC-AUC | Dangerous errors |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.9998 | 0.9998 | 0.9995 | 1.0000 | 1.0000 | 2 |
+
+`dangerous_errors` — число случаев, когда ядовитый / не рекомендованный гриб был ошибочно предсказан как съедобный.
 
 ## Отчет
 
 Финальный отчет: [report/report.md](report/report.md).
+
+Отчетные артефакты:
+
+- [report/experiment_results.csv](report/experiment_results.csv)
+- [report/final_test_metrics.json](report/final_test_metrics.json)
